@@ -115,7 +115,9 @@ Let's say you're using a [Compose.io RethinkDB](https://www.compose.io/rethinkdb
 
 First, make sure you have saved your cluster Public SSL Key to a file, e.g. `cacert`. Now, you need to create a keystore:
 ```
+keytool -genkey -keystore keystore.jks -keyalg RSA
 keytool -keystore keystore.jks -importcert -alias rethinkdb -file cacert
+mkdir src/main/resources && mv keystore.ks src/main/resources/
 ```
 
 When prompted for a passphrase type `password`. If you're going with your own passphrase, make sure you change the code in this repository accordingly.
