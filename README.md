@@ -106,7 +106,7 @@ gradle install
 
 Let's say you have your RethinkDB server running on `localhost`:
 ```
-mvn exec:java -Dargs "localhost 28015"
+mvn exec:java -Dexec.args="localhost 28015"
 ```
 
 #### Secure
@@ -125,7 +125,7 @@ When prompted for a passphrase type `password`. If you're going with your own pa
 
 Now, run:
 ```
-mvn exec:java -Dargs "my-compose-io-proxy.dblayer.com 12345 my-auth-key-xxx keystore.jks"
+mvn exec:java -Dexec.args="my-compose-io-proxy.dblayer.com 12345 my-auth-key-xxx keystore.jks"
 ```
 
 Obviously, you need to adapt the previous command accordingly.
