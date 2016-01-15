@@ -6,7 +6,9 @@ import com.rethinkdb.net.Connection;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.concurrent.TimeoutException;
@@ -23,7 +25,7 @@ public class App {
     /**
      * @param args
      */
-    public static void main(String... args) {
+    public static void main(String... args) throws IOException, TimeoutException {
         if (args.length < 2) {
             System.err.println("To test unecure: mvn exec:java <hostname> <port> <authKey> <keystore>");
             System.err.println("To test secure: mvn exec:java <hostname> <port> <authKey> <keystore>");
@@ -40,8 +42,11 @@ public class App {
             builder.authKey(args[2]);
         }
 
-        // is SSL set?
-        if (args.length == 4) {
+        // is keystore set?
+        if (args.length == 3) { // no, use cacert
+            final InputStream cacert = new FileInputStream("cacert");
+            conn = builder.certFile(cacert).connect();
+        } else if (args.length == 4) { // yes, use keystore
             try {
                 // get classloader
                 final ClassLoader classLoader = App.class.getClassLoader();
@@ -62,11 +67,8 @@ public class App {
                 final SSLContext sslContext = SSLContext.getInstance(DEFAULT_SSL_PROTOCOL);
                 sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-                // connect to secure server
                 conn = builder.sslContext(sslContext).connect();
-            } catch (IOException | CertificateException | NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException | KeyManagementException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
+            } catch (CertificateException | NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException | KeyManagementException e) {
                 e.printStackTrace();
             }
         } else {

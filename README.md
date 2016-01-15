@@ -111,7 +111,21 @@ mvn exec:java -Dexec.args="localhost 28015"
 
 #### Secure
 
-Let's say you're using a [Compose.io RethinkDB](https://www.compose.io/rethinkdb/) cluster.
+You have two ways of connecting to a secured RethinkBD server:
+
+##### Simple
+
+If you're using a [Compose.io RethinkDB](https://www.compose.io/rethinkdb/) cluster, the public SSL key will suffice.
+Please, make sure you have saved your cluster Public SSL Key to a file named `cacert`.
+
+Now, run:
+```
+mvn exec:java -Dexec.args="my-compose-io-proxy.dblayer.com 12345 my-auth-key-xxx"
+```
+
+##### Advanced
+
+This is what you need if you have tailored SSL scenarios. However, it will work for [Compose.io RethinkDB](https://www.compose.io/rethinkdb/) clusters as well and that's what I will demonstrate below.'
 
 First, make sure you have saved your cluster Public SSL Key to a file, e.g. `cacert`. Now, you need to create a keystore:
 ```
