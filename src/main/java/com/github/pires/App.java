@@ -6,7 +6,6 @@ import com.rethinkdb.net.Connection;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
@@ -44,9 +43,12 @@ public class App {
 
         // is keystore set?
         if (args.length == 3) { // no, use cacert
-            final InputStream cacert = new FileInputStream("cacert");
+            System.out.println("Using certificate: my_cacert");
+            final InputStream cacert = App.class.getClassLoader().getResourceAsStream("my_cacert");
+            System.out.println("available bytes: " + cacert.available());
             conn = builder.certFile(cacert).connect();
         } else if (args.length == 4) { // yes, use keystore
+            System.out.println("Using keystore: " + args[3]);
             try {
                 // get classloader
                 final ClassLoader classLoader = App.class.getClassLoader();
@@ -69,19 +71,20 @@ public class App {
 
                 conn = builder.sslContext(sslContext).connect();
             } catch (CertificateException | NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException | KeyManagementException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         } else {
             try {
                 // connect to insecure server
                 conn = builder.connect();
             } catch (TimeoutException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
 
         // was connection established?
         if (conn != null && conn.isOpen()) {
+            System.out.println("Connected. Doing stuff..");
             // perform database creation, usage and deletion
             r.dbCreate("testDb").run(conn);
             conn.use("testDb");

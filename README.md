@@ -116,7 +116,7 @@ You have two ways of connecting to a secured RethinkBD server:
 ##### Simple
 
 If you're using a [Compose.io RethinkDB](https://www.compose.io/rethinkdb/) cluster, the public SSL key will suffice.
-Please, make sure you have saved your cluster Public SSL Key to a file named `cacert`.
+Please, make sure you have saved your cluster Public SSL Key to a file named `my_cacert`.
 
 Now, run:
 ```
